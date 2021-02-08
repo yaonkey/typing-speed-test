@@ -1,11 +1,9 @@
-from pathlib import Path
 ## report system ##
+from datetime import datetime
+
+
 def run(res):
     res_file = 'typing-speed-test.results.txt' 
-    res_file_exists = Path(res_file)
-    if res_file_exists.is_file():
-        with open(res_file, 'r+') as rf:
-            rf.write(res)
-    else:
-        with open(res_file, 'w') as rf:
-            rf.write(res)
+    with open(res_file, 'a+') as rf:
+        date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        rf.write(str(date)+' '+res+'\n')

@@ -38,7 +38,7 @@ class Game:
         self.bg = pygame.transform.scale(self.bg, (500,750))
 
         self.screen = pygame.display.set_mode((self.w,self.h))
-        pygame.display.set_caption('Type Speed test')
+        pygame.display.set_caption('Typing Speed test')
        
         
     def draw_text(self, screen, msg, y ,fsize, color):
