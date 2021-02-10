@@ -1,3 +1,6 @@
+# dev-files
+changelog.txt
+
 # Save files
 typing-speed-test.results.txt
 
@@ -26,6 +29,7 @@ wheels/
 pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
+.idea/
 .installed.cfg
 *.egg
 MANIFEST
