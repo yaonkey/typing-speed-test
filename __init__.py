@@ -1,8 +1,8 @@
 import getopt
-import sys
+from modules.config import *
 
 from modules.game import *
-
+# TODO: save sentencefile to conf.ini
 if __name__ == '__main__':
     if len(sys.argv[1:]) >= 1:
         report: bool = False
@@ -26,6 +26,7 @@ if __name__ == '__main__':
                     debug = True
                     print(f'{debug=}')
             game = Game(sentencefile, report, debug)
+            setConf('FILE', 'src', sentencefile)
             game.run()
         except getopt.GetoptError:
             print(help_text)

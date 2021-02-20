@@ -4,19 +4,22 @@ import sys
 import time
 import random
 import modules.report as rs
+from modules.config import *
+from numba import jit
 
 
+# TODO: Требуется переписать проект с использованием библиотеки dearpygui
 # res: 750 x 500
 
 class Game:
-
-    def __init__(self, sentencefile: str = 'src/sentences.txt', report: bool = False, debug: bool = False):
+    def __init__(self, sentencefile: str = getConf('DIRS', 'sentence'), report: bool = False, debug: bool = False):
         self.sentencefile = sentencefile
         self.report = report
         self.debug = debug
-        self.w = 750
-        self.h = 500
+        self.w = int(getConf('SCREEN', 'width'))
+        self.h = int(getConf('SCREEN', 'height'))
         self.reset = True
+        self.clock: pygame.time.Clock()
         self.active = False
         self.input_text = ''
         self.word = ''
@@ -31,10 +34,11 @@ class Game:
         self.RESULT_C = (255, 0, 0)
 
         pygame.init()  # starting
+        print(getConf('DIRS', 'open_img'))
         self.open_img = pygame.image.load('src/type-speed-open.png')
         self.open_img = pygame.transform.scale(self.open_img, (self.w, self.h))
 
-        self.bg = pygame.image.load('src/background.jpg')
+        self.bg = pygame.image.load(getConf('DIRS', 'background'))
         self.bg = pygame.transform.scale(self.bg, (500, 750))
 
         self.screen = pygame.display.set_mode((self.w, self.h))
@@ -89,7 +93,6 @@ class Game:
             pygame.display.update()
 
     def run(self):
-        global clock
         self.reset_game()
 
         self.running = True
