@@ -5,14 +5,16 @@ import time
 import random
 import modules.report as rs
 from modules.config import *
-from numba import jit
 
-
-# TODO: Требуется переписать проект с использованием библиотеки dearpygui
 # res: 750 x 500
 
+
 class Game:
-    def __init__(self, sentencefile: str = getConf('DIRS', 'sentence'), report: bool = False, debug: bool = False):
+    def __init__(
+            self, sentencefile: str = getConf('DIRS', 'sentence'),
+            report: bool = getConf('SYSTEM', 'report'),
+            debug: bool = getConf('DEV', 'debug')
+    ):
         self.sentencefile = sentencefile
         self.report = report
         self.debug = debug
@@ -33,8 +35,7 @@ class Game:
         self.TEXT_C = (255, 255, 255)
         self.RESULT_C = (255, 0, 0)
 
-        pygame.init()  # starting
-        print(getConf('DIRS', 'open_img'))
+        pygame.init()  # start app
         self.open_img = pygame.image.load('src/type-speed-open.png')
         self.open_img = pygame.transform.scale(self.open_img, (self.w, self.h))
 
@@ -141,7 +142,7 @@ class Game:
 
             pygame.display.update()
 
-        clock.tick(60)
+        self.clock.tick(60)
 
     def reset_game(self):
         self.screen.blit(self.open_img, (0, 0))
