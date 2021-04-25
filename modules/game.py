@@ -137,8 +137,8 @@ class Game:
                         else:
                             try:
                                 self.input_text += event.unicode
-                            except:
-                                pass
+                            except Exception as e:
+                                print(f'Error: {e}')
 
             pygame.display.update()
 

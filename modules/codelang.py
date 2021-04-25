@@ -13,4 +13,4 @@ class CodeLang:
             raise ValueError(f'Язык программирования {lang} недоступен!')
 
     def load(self):
-        _url = self.url + repo.full_name + '/master/' # todo: поиск файла
+        _url = self.url + repo.full_name + '/master/'  # todo: поиск файла
