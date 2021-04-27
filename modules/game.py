@@ -1,23 +1,17 @@
 import pygame
-from pygame.locals import *
+from pygame.locals import QUIT
 import sys
 import time
 import random
 import modules.report as rs
-from modules.config import *
+from modules.config import getConf
 
 # res: 750 x 500
 
 
 class Game:
-    def __init__(
-            self, sentencefile: str = getConf('DIRS', 'sentence'),
-            report: bool = getConf('SYSTEM', 'report'),
-            debug: bool = getConf('DEV', 'debug')
-    ):
-        self.sentencefile = sentencefile
-        self.report = report
-        self.debug = debug
+    def __init__(self):
+        self.sentencefile = getConf('DIRS', 'sentence')
         self.w = int(getConf('SCREEN', 'width'))
         self.h = int(getConf('SCREEN', 'height'))
         self.reset = True
@@ -36,7 +30,7 @@ class Game:
         self.RESULT_C = (255, 0, 0)
 
         pygame.init()  # start app
-        self.open_img = pygame.image.load('src/type-speed-open.png')
+        self.open_img = pygame.image.load(getConf('DIRS', 'open_img'))
         self.open_img = pygame.transform.scale(self.open_img, (self.w, self.h))
 
         self.bg = pygame.image.load(getConf('DIRS', 'background'))
@@ -52,11 +46,14 @@ class Game:
         screen.blit(text, text_rect)
         pygame.display.update()
 
-    def get_sentence(self):
+    def get_sentence(self):  # fix me!!!
         with open(self.sentencefile, 'r') as sfile:
-            f = sfile.read()
-            sentences = f.split('\n')
-            sentence = random.choice(sentences)
+            cfile = sfile.readlines()
+            sentences: list[str] = []
+            for line in range(0, 10):
+                sentences.append(cfile[line].rstrip('\n'))
+            # sentence = (cfile[:75] + '...') if len(cfile) > 75 else cfile
+            sentence = ''.join([word+'\n' for word in sentences])
             return sentence
 
     def show_results(self, screen):
@@ -70,16 +67,16 @@ class Game:
                 try:
                     if self.input_text[i] == c:
                         count += 1
-                except:
+                except Exception as e:
                     pass
             self.accuracy = count / len(self.word) * 100
 
             # Calculate words per minute
             self.wpm = len(self.input_text) * 60 / (5 * self.total_time)
             self.end = True
-            if self.debug: print(self.total_time)
 
-            self.results = f'Time: {int(self.total_time)} sec   Accuracy: {int(self.accuracy)}%   Wpm: {int(self.wpm)}'
+            self.results = f'Time: {int(self.total_time)} sec | Accuracy: '\
+                           f'{int(self.accuracy)}% | Wpm: {int(self.wpm)}'
 
             # draw icon image
             self.time_img = pygame.image.load('src/icon.png')
@@ -88,9 +85,6 @@ class Game:
             screen.blit(self.time_img, (self.w / 2 - 75, self.h - 140))
             self.draw_text(screen, "Reset", self.h - 70, 26, (100, 100, 100))
 
-            if self.report: rs.run(self.results)
-            if self.debug: print(self.results)
-
             pygame.display.update()
 
     def run(self):
@@ -98,7 +92,7 @@ class Game:
 
         self.running = True
         while self.running:
-            clock = pygame.time.Clock()
+            # clock = pygame.time.Clock()
             self.screen.fill((0, 0, 0), (50, 250, 650, 50))
             pygame.draw.rect(self.screen, self.HEAD_C, (50, 250, 650, 50), 2)
 
@@ -126,9 +120,9 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if self.active and not self.end:
                         if event.key == pygame.K_RETURN:
-                            if self.debug: print(self.input_text)
                             self.show_results(self.screen)
-                            self.draw_text(self.screen, self.results, 350, 28, self.RESULT_C)
+                            self.draw_text(self.screen, self.results,
+                                           350, 28, self.RESULT_C)
                             self.end = True
 
                         elif event.key == pygame.K_BACKSPACE:
@@ -161,7 +155,8 @@ class Game:
 
         # Get random sentence 
         self.word = self.get_sentence()
-        if not self.word: self.reset_game()
+        if not self.word:
+            self.reset_game()
 
         # drawing heading
         self.screen.fill((0, 0, 0))

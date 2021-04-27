@@ -1,16 +1,23 @@
 from github import Github
-import requests
+from parsing import Parsing
+
+
 class CodeLang:
-    url: str = 'https://raw.github.com/'
+    urls: list[str] = ['https://raw.github.com/', '/master/']
     av_langs: list = [
-        'php', 'c', 'cs', 'cpp', 'python', 'ruby', 'rust', 'js', 'html', 'css'
-    ]
+        'php', 'c', 'cs', 'cpp', 'python', 'java',
+        'rust', 'javascript', 'html', 'css']
+    git = Github()
 
     def __init__(self, lang: str):
         if lang in self.av_lang:
-            pass
+            self.__load(lang)
         else:
             raise ValueError(f'Язык программирования {lang} недоступен!')
 
-    def load(self):
-        _url = self.url + repo.full_name + '/master/'  # todo: поиск файла
+    def __load(self, lang: str):
+        '''Метод, подгружающий ссылку на репозиторий по выбранному языку'''
+        repo = self.git.search_repositories(query=f'language:{lang}')
+        _url = self.urls[0] + repo.full_name + self.urls[1] + f'main.{lang}'
+        print(_url)  # debug
+        Parsing(_url)
